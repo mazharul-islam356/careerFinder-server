@@ -38,6 +38,42 @@ async function run() {
         res.send(result)
     })
 
+// _id,name,image,title,category,salary,description,postingD,applicantsN,applicantsD
+
+app.get("/addJobs/:id", async (req, res) => {
+  const id = req.params.id;
+  const query = {_id: new ObjectId(id)}
+  const result = await jobsCollection.findOne(query)
+  res.send(result)
+});
+
+    app.put('/addJobs/:id', async (req, res) => {
+      const id = req.params.id
+      const filter = { _id: new ObjectId(id) }
+        const options = { upsert: true }
+        const updatedJob = req.body
+        const job = {
+          $set: {
+            name:updatedJob.name,
+            image:updatedJob.image, 
+            title:updatedJob.title, 
+            category:updatedJob.category, 
+            salary:updatedJob.salary, 
+            description:updatedJob.description, 
+            postingD:updatedJob.postingD, 
+            applicantsN:updatedJob.applicantsN, 
+            applicantsD:updatedJob.applicantsD
+          }
+
+        }
+
+      const result = await jobsCollection.updateOne(filter,job,options)
+      res.send(result)
+    })
+
+
+
+
     app.post('/apply',async (req,res)=>{
         const apply = req.body
         console.log(apply);
@@ -57,14 +93,16 @@ async function run() {
         res.send(result)
       });
 
+      
 
       
     app.get("/addJobs", async (req, res) => {
         const result = await jobsCollection.find().toArray();
         res.send(result);
       });
-   
 
+
+   
 
 
       app.delete("/addJobs/:id", async (req, res) => {
